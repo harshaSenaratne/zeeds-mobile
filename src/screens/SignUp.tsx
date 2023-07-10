@@ -6,15 +6,36 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-const SignUp = () => {
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+const auth = getAuth();
 
-  const onPressSignUp = () => {
-    // Do something about signup operation
-  };
-  const [state, setState] = useState({
-    email: "",
-    password: "",
-  });
+const SignUp = ({navigation}:any) => {
+  const [value, setValue] = React.useState({
+    email: '',
+    password: '',
+    error: ''
+  })
+
+  async function signUp() {
+    
+    if (value.email === '' || value.password === '') {
+      setValue({
+        ...value,
+        error: 'Email and password are mandatory.'
+      })
+      return;
+    }
+
+    try {
+      await createUserWithEmailAndPassword(auth, value.email, value.password);
+      navigation.navigate('Login');
+    } catch (error) {
+      setValue({
+        ...value,
+        error: error.message,
+      })
+    }
+  }
   return (
     <View style={styles.container}>
       <Text style={styles.title}> SignUp</Text>
@@ -22,9 +43,10 @@ const SignUp = () => {
         <TextInput
           style={styles.inputText}
           placeholder="Email"
+          value={value.email}
+
           placeholderTextColor="#003f5c"
-          onChangeText={(text) => setState({ email: text })}
-        />
+               onChangeText={(text) => setValue({ ...value, email: text })}        />
       </View>
       <View style={styles.inputView}>
         <TextInput
@@ -32,11 +54,10 @@ const SignUp = () => {
           secureTextEntry
           placeholder="Password"
           placeholderTextColor="#003f5c"
-          onChangeText={(text) => setState({ password: text })}
-        />
+          onChangeText={(text) => setValue({ ...value, password: text })}        />
       </View>
-      <TouchableOpacity onPress={onPressLogin} style={styles.loginBtn}>
-        <Text style={styles.inputText}>Signup </Text>
+      <TouchableOpacity onPress={signUp} style={styles.loginBtn}>
+        <Text style={styles.btnText}>Signup </Text>
       </TouchableOpacity>
 
     </View>
@@ -82,5 +103,10 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginBottom: 10,
   },
+  btnText:{
+    fontSize: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  }
 });
 export default SignUp;

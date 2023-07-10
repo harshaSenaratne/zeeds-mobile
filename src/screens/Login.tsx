@@ -6,7 +6,12 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-const Login = () => {
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { StackScreenProps } from "@react-navigation/stack";
+
+const auth = getAuth();
+
+const Login = ({navigation}:any) => {
   const onPressLogin = () => {
     // Do something about login operation
   };
@@ -14,21 +19,44 @@ const Login = () => {
     // Do something about forgot password operation
   };
   const onPressSignUp = () => {
-    // Do something about signup operation
+    navigation.navigate('SignUp')
   };
-  const [state, setState] = useState({
+  const [value, setValue] = useState({
     email: "",
     password: "",
+    error: "",
   });
+
+
+  async function signIn() {
+    if (value.email === "" || value.password === "") {
+      setValue({
+        ...value,
+        error: "Email and password are mandatory.",
+      });
+      return;
+    }
+
+    try {
+      await signInWithEmailAndPassword(auth, value.email, value.password);
+    } catch (error) {
+      setValue({
+        ...value,
+        error: error.message,
+      });
+    }
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}> Login</Text>
       <View style={styles.inputView}>
         <TextInput
           style={styles.inputText}
+          value={value.email}
           placeholder="Email"
           placeholderTextColor="#003f5c"
-          onChangeText={(text) => setState({ email: text })}
+          onChangeText={(text) => setValue({ ...value, email: text })}
         />
       </View>
       <View style={styles.inputView}>
@@ -37,14 +65,11 @@ const Login = () => {
           secureTextEntry
           placeholder="Password"
           placeholderTextColor="#003f5c"
-          onChangeText={(text) => setState({ password: text })}
+          onChangeText={(text) => setValue({ ...value, password: text })}
         />
       </View>
-      <TouchableOpacity onPress={onPressForgotPassword}>
-        <Text style={styles.forgotAndSignUpText}>Forgot Password?</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={onPressLogin} style={styles.loginBtn}>
-        <Text style={styles.inputText}>LOGIN </Text>
+      <TouchableOpacity onPress={signIn} style={styles.loginBtn}>
+        <Text style={styles.btnText}>LOGIN </Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={onPressSignUp}>
         <Text style={styles.forgotAndSignUpText}>Signup</Text>
@@ -92,5 +117,10 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginBottom: 10,
   },
+  btnText:{
+    fontSize: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  }
 });
 export default Login;
