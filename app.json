@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c9dd358e-98cd-447b-8252-617bef18129f"
+      }
+    },
+    "owner": "senaratneh"
   }
 }
