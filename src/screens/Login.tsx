@@ -8,9 +8,7 @@ import {
 } from "react-native";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { StackScreenProps } from "@react-navigation/stack";
-
 const auth = getAuth();
-
 const Login = ({navigation}:any) => {
   const onPressLogin = () => {
     // Do something about login operation
@@ -26,7 +24,6 @@ const Login = ({navigation}:any) => {
     password: "",
     error: "",
   });
-
 
   async function signIn() {
     if (value.email === "" || value.password === "") {

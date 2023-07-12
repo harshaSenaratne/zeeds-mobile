@@ -6,14 +6,54 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
+import { getAuth } from "firebase/auth";
+import createApolloClient from '../../apollo'
+import gql from "graphql-tag";
+import {useMutation} from 'react-apollo';
+
 const UpdateNumber = () => {
 
-  const onUpdate = () => {
-    // Do something about signup operation
-  };
+  const UPDATE_MUTATION = gql`
+  mutation update_numbers($id: String!, $value: String!) {
+    update_numbers(
+    where:{id:{_eq:1}}, _set:{value:"200"}
+  ){
+    affected_rows
+  }
+  }
+`;
+
+const auth = getAuth();
+const getToken = async () => {
+  await auth.currentUser?.getIdToken().then((value)=>{
+    console.log('HHHHHH',value)
+  })  
+}
+
+// const onUpdate = async ()  => {
+//   const numericRegex = /^([0-9]{1,100})+$/
+//   if(numericRegex.test(state.number)){
+//     const UPDATE_NUMBER = gql` mutation update_numbers(
+//       where:{id:{_eq:1}}, _set:{value:${state.number}}
+//     )`
+//    if(loading || error){
+//     console.info("Loading......");
+//    }
+//    console.info('Successful', data)
+//   }
+
+//   };
   const [state, setState] = useState({
     number: "",
   });
+  const [update_numbers, { data, loading, error }] = useMutation(UPDATE_MUTATION,{
+    variables: { id: 1, value: 23445 },
+    onCompleted:(data) => {
+      console.info(data);
+    }
+  }
+  );
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}> Current Number : 1</Text>
@@ -26,8 +66,11 @@ const UpdateNumber = () => {
           onChangeText={(value) => setState({ number: value })}
         />
       </View>
-      <TouchableOpacity onPress={onUpdate} style={styles.updateBtn}>
+      <TouchableOpacity onPress={update_numbers} style={styles.updateBtn}>
         <Text style={styles.btnText}>Update </Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={getToken} style={styles.updateBtn}>
+        <Text style={styles.btnText}>GET TOKEN </Text>
       </TouchableOpacity>
 
     </View>
