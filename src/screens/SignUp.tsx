@@ -7,9 +7,11 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-const auth = getAuth();
+import { useToast } from "react-native-toast-notifications";
 
+const auth = getAuth();
 const SignUp = ({ navigation }: any) => {
+  const toast = useToast();
   const [value, setValue] = React.useState({
     email: "",
     password: "",
@@ -24,11 +26,24 @@ const SignUp = ({ navigation }: any) => {
       });
       return;
     }
-
     try {
-      await createUserWithEmailAndPassword(auth, value.email, value.password);
-      navigation.navigate("Login");
+      await createUserWithEmailAndPassword(auth, value.email, value.password).then(()=>{
+        toast.show("Signup successful", {
+          type: "success",
+          placement: "bottom",
+          duration: 4000,
+          animationType: "slide-in",
+        });
+        navigation.navigate("Login");
+
+      });
     } catch (error) {
+      toast.show("Error: Signup failed!", {
+        type: "danger",
+        placement: "bottom",
+        duration: 4000,
+        animationType: "slide-in",
+      });
       setValue({
         ...value,
         error: error.message,

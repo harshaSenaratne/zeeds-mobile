@@ -7,9 +7,11 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { StackScreenProps } from "@react-navigation/stack";
+import { useToast } from "react-native-toast-notifications";
 const auth = getAuth();
 const Login = ({ navigation }: any) => {
+  const toast = useToast();
+
   const onPressSignUp = () => {
     navigation.navigate("SignUp");
   };
@@ -29,8 +31,23 @@ const Login = ({ navigation }: any) => {
     }
 
     try {
-      await signInWithEmailAndPassword(auth, value.email, value.password);
+      await signInWithEmailAndPassword(auth, value.email, value.password)
+      .then(()=>{
+        toast.show("User Signed In", {
+          type: "success",
+          placement: "bottom",
+          duration: 4000,
+          animationType: "slide-in",
+        });
+      })
+      ;
     } catch (error) {
+      toast.show("Error: Signin failed!", {
+        type: "danger",
+        placement: "bottom",
+        duration: 4000,
+        animationType: "slide-in",
+      });
       setValue({
         ...value,
         error: error.message,
@@ -96,7 +113,7 @@ const styles = StyleSheet.create({
   },
   forgotAndSignUpText: {
     color: "white",
-    fontSize: 11,
+    fontSize: 14,
   },
   loginBtn: {
     width: "80%",

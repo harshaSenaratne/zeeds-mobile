@@ -10,7 +10,9 @@ import {
 import { Query } from "react-apollo";
 import gql from "graphql-tag";
 import { useMutation } from "react-apollo";
+import { useToast } from "react-native-toast-notifications";
 const UpdateNumber = () => {
+  const toast = useToast();
   const FETCH_DATA = gql`
     query {
       numbers {
@@ -69,6 +71,12 @@ const UpdateNumber = () => {
             variables: { id: getId?.numbers[0]?.id, value: state.number },
           }).then(() => {
             Keyboard.dismiss();
+            toast.show("Update Successful!", {
+              type: "success",
+              placement: "bottom",
+              duration: 4000,
+              animationType: "slide-in",
+            });
           });
         }}
         style={styles.updateBtn}
