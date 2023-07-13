@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import 'firebase/auth';
+import "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -12,11 +12,10 @@ const firebaseConfig = {
   projectId: "zeeds-app-9c2fc",
   storageBucket: "zeeds-app-9c2fc.appspot.com",
   messagingSenderId: "976521892930",
-  appId: "1:976521892930:web:6e5b591a0ec2c8f69109db"
-}
+  appId: "1:976521892930:web:6e5b591a0ec2c8f69109db",
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
 export default app;
-

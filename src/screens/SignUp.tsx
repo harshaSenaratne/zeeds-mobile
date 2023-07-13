@@ -9,31 +9,30 @@ import {
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 const auth = getAuth();
 
-const SignUp = ({navigation}:any) => {
+const SignUp = ({ navigation }: any) => {
   const [value, setValue] = React.useState({
-    email: '',
-    password: '',
-    error: ''
-  })
+    email: "",
+    password: "",
+    error: "",
+  });
 
   async function signUp() {
-    
-    if (value.email === '' || value.password === '') {
+    if (value.email === "" || value.password === "") {
       setValue({
         ...value,
-        error: 'Email and password are mandatory.'
-      })
+        error: "Email and password are mandatory.",
+      });
       return;
     }
 
     try {
       await createUserWithEmailAndPassword(auth, value.email, value.password);
-      navigation.navigate('Login');
+      navigation.navigate("Login");
     } catch (error) {
       setValue({
         ...value,
         error: error.message,
-      })
+      });
     }
   }
   return (
@@ -44,9 +43,9 @@ const SignUp = ({navigation}:any) => {
           style={styles.inputText}
           placeholder="Email"
           value={value.email}
-
           placeholderTextColor="#003f5c"
-               onChangeText={(text) => setValue({ ...value, email: text })}        />
+          onChangeText={(text) => setValue({ ...value, email: text })}
+        />
       </View>
       <View style={styles.inputView}>
         <TextInput
@@ -54,12 +53,12 @@ const SignUp = ({navigation}:any) => {
           secureTextEntry
           placeholder="Password"
           placeholderTextColor="#003f5c"
-          onChangeText={(text) => setValue({ ...value, password: text })}        />
+          onChangeText={(text) => setValue({ ...value, password: text })}
+        />
       </View>
       <TouchableOpacity onPress={signUp} style={styles.loginBtn}>
         <Text style={styles.btnText}>Signup </Text>
       </TouchableOpacity>
-
     </View>
   );
 };
@@ -103,10 +102,10 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginBottom: 10,
   },
-  btnText:{
+  btnText: {
     fontSize: 16,
     alignItems: "center",
     justifyContent: "center",
-  }
+  },
 });
 export default SignUp;

@@ -9,15 +9,9 @@ import {
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { StackScreenProps } from "@react-navigation/stack";
 const auth = getAuth();
-const Login = ({navigation}:any) => {
-  const onPressLogin = () => {
-    // Do something about login operation
-  };
-  const onPressForgotPassword = () => {
-    // Do something about forgot password operation
-  };
+const Login = ({ navigation }: any) => {
   const onPressSignUp = () => {
-    navigation.navigate('SignUp')
+    navigation.navigate("SignUp");
   };
   const [value, setValue] = useState({
     email: "",
@@ -114,10 +108,10 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginBottom: 10,
   },
-  btnText:{
+  btnText: {
     fontSize: 16,
     alignItems: "center",
     justifyContent: "center",
-  }
+  },
 });
 export default Login;
