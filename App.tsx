@@ -5,7 +5,7 @@ import RootNavigation from './src/navigation';
 import createApolloClient from './apollo'
 export default function App() {
   return (
-    <ApolloProvider client={createApolloClient()}>
+    <ApolloProvider client={createApolloClient('')}>
     <RootNavigation/>
     </ApolloProvider>
   );

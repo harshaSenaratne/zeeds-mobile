@@ -7,70 +7,60 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { getAuth } from "firebase/auth";
-import createApolloClient from '../../apollo'
-import gql from "graphql-tag";
+import {Query} from 'react-apollo';
+import gql from 'graphql-tag';
 import {useMutation} from 'react-apollo';
 
 const UpdateNumber = () => {
 
   const UPDATE_MUTATION = gql`
-  mutation update_numbers($id: String!, $value: String!) {
+  mutation update_numbers($id: Int!, $value: Int!) {
     update_numbers(
-    where:{id:{_eq:1}}, _set:{value:"200"}
+    where:{id:{_eq:$id}}, _set:{value:$value}
   ){
     affected_rows
   }
   }
 `;
-
 const auth = getAuth();
-const getToken = async () => {
-  await auth.currentUser?.getIdToken().then((value)=>{
-    console.log('HHHHHH',value)
-  })  
-}
 
-// const onUpdate = async ()  => {
-//   const numericRegex = /^([0-9]{1,100})+$/
-//   if(numericRegex.test(state.number)){
-//     const UPDATE_NUMBER = gql` mutation update_numbers(
-//       where:{id:{_eq:1}}, _set:{value:${state.number}}
-//     )`
-//    if(loading || error){
-//     console.info("Loading......");
-//    }
-//    console.info('Successful', data)
-//   }
-
-//   };
   const [state, setState] = useState({
-    number: "",
+    number: 0,
   });
-  const [update_numbers, { data, loading, error }] = useMutation(UPDATE_MUTATION,{
-    variables: { id: 1, value: 23445 },
-    onCompleted:(data) => {
-      console.info(data);
-    }
-  }
-  );
+  const [update_numbers, { data, loading, error }] = useMutation(UPDATE_MUTATION);
   
   return (
     <View style={styles.container}>
-      <Text style={styles.title}> Current Number : 1</Text>
+      <Query query={gql`query{ numbers{ id value }}`}>
+  {({data, error, loading}:any) => {
+   if(error || loading){
+     return (
+       <View><Text style={styles.title}> 
+       Loading ....
+       </Text></View>
+     )
+   }
+  return (
+   <View><Text style={styles.title}>Current Number : 
+   {data?.numbers[0]?.value}
+   </Text></View>
+  )
+ }}
+</Query>
       <View style={styles.inputView}>
         <TextInput
           style={styles.inputText}
           keyboardType='numeric'
           placeholder="type a number"
           placeholderTextColor="#003f5c"
-          onChangeText={(value) => setState({ number: value })}
+          onChangeText={(value) => setState({ number: parseInt(value) })}
         />
       </View>
-      <TouchableOpacity onPress={update_numbers} style={styles.updateBtn}>
+      <TouchableOpacity onPress={(e)=>{
+        e.preventDefault()
+        update_numbers({variables:{id:1, value:state.number}})
+      }} style={styles.updateBtn}>
         <Text style={styles.btnText}>Update </Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={getToken} style={styles.updateBtn}>
-        <Text style={styles.btnText}>GET TOKEN </Text>
       </TouchableOpacity>
 
     </View>
